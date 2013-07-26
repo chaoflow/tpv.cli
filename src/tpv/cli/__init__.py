@@ -10,6 +10,7 @@ from tpv.ordereddict import OrderedDict
 #CountingAttr = plumbum.cli.CountingAttr
 Flag = plumbum.cli.Flag
 SwitchAttr = plumbum.cli.SwitchAttr
+autoswitch = plumbum.cli.autoswitch
 switch = plumbum.cli.switch
 
 
