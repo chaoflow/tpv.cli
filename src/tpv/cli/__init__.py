@@ -3,7 +3,6 @@ import plumbum.cli
 import sys
 
 from metachao import aspect
-from tpv.ordereddict import OrderedDict
 
 
 # plumbum stuff we support (so far)
