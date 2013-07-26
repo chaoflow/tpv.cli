@@ -1,9 +1,6 @@
-import argparse
 import plumbum.cli
 import pkg_resources
 import sys
-
-from metachao import aspect
 
 
 # plumbum stuff we support (so far)
