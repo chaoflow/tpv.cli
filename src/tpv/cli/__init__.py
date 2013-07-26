@@ -28,8 +28,9 @@ class application(aspect.Aspect):
 
     def _generate_plumbum_cli_app(self, node, main_func):
         class App(node.__class__, plumbum.cli.Application):
-            main = main_func
+            __doc__ = node.__doc__
             __init__ = plumbum.cli.Application.__init__
+            main = main_func
 
         for name, subcommand in node.items():
             subcommand = self._generate_plumbum_cli_app(
