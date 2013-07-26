@@ -1,5 +1,6 @@
 import argparse
 import plumbum.cli
+import pkg_resources
 import sys
 
 from metachao import aspect
@@ -19,25 +20,31 @@ switch = plumbum.cli.switch
 plumbum.cli.Application.version._switch_info.names = ['version']
 
 
-class application(aspect.Aspect):
-    @aspect.plumb
-    def __call__(_next, self, **kw):
-        self._App = self._generate_plumbum_cli_app(node=self,
-                                                   main_func=_next._next_method)
-        self._app = self._App.run()
+class Command(plumbum.cli.Application):
+    CALL_MAIN_IF_NESTED_COMMAND = False
+    entry_point_group = None
 
-    def _generate_plumbum_cli_app(self, node, main_func):
-        class App(node.__class__, plumbum.cli.Application):
-            __doc__ = node.__doc__
-            __init__ = plumbum.cli.Application.__init__
-            main = main_func
+    @property
+    def main(self):
+        return self.__call__
 
-        for name, subcommand in node.items():
-            subcommand = self._generate_plumbum_cli_app(
-                node=subcommand,
-                main_func=subcommand.__call__
-            )
-            subcommand.__name__ = name
-            App.subcommand(name)(subcommand)
+    def __init__(self, *args, **kw):
+        self._subcommand_classes = {'/': self.__class__}
+        if self.entry_point_group:
+            eps = sorted(pkg_resources.iter_entry_points(self.entry_point_group),
+                         key=lambda x: x.name)
+            for ep in eps:
+                path = ep.name
+                if not path.startswith('/'):
+                    path = '/' + path
+                if not path.endswith('/'):
+                    path = path + '/'
+                components = path.split('/')
+                name = components.pop(-2)
+                parent = '/'.join(components)
+                Parent = self._subcommand_classes[parent]
+                Subcommand = ep.load()
+                self._subcommand_classes[path] = Subcommand
+                Parent.subcommand(name)(Subcommand)
 
-        return App
+        plumbum.cli.Application.__init__(self, *args, **kw)
