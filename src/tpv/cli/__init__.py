@@ -2,6 +2,9 @@ import plumbum.cli
 import pkg_resources
 import sys
 
+from metachao import aspect
+from metachao import classtree
+
 
 # plumbum stuff we support (so far)
 #CountingAttr = plumbum.cli.CountingAttr
@@ -17,31 +20,26 @@ switch = plumbum.cli.switch
 plumbum.cli.Application.version._switch_info.names = ['version']
 
 
+class setitem_registers_subcommand(aspect.Aspect):
+    """Register a child as subcommand
+
+    """
+    @aspect.plumb
+    def __setitem__(_next, cls, name, subcommand):
+        _next(name, subcommand)
+        cls.subcommand(name)(subcommand)
+
+
+@setitem_registers_subcommand
+class command(classtree.node):
+    pass
+
+
 class Command(plumbum.cli.Application):
+    __metaclass__ = command
+
     CALL_MAIN_IF_NESTED_COMMAND = False
-    entry_point_group = None
 
     @property
     def main(self):
         return self.__call__
-
-    def __init__(self, *args, **kw):
-        self._subcommand_classes = {'/': self.__class__}
-        if self.entry_point_group:
-            eps = sorted(pkg_resources.iter_entry_points(self.entry_point_group),
-                         key=lambda x: x.name)
-            for ep in eps:
-                path = ep.name
-                if not path.startswith('/'):
-                    path = '/' + path
-                if not path.endswith('/'):
-                    path = path + '/'
-                components = path.split('/')
-                name = components.pop(-2)
-                parent = '/'.join(components)
-                Parent = self._subcommand_classes[parent]
-                Subcommand = ep.load()
-                self._subcommand_classes[path] = Subcommand
-                Parent.subcommand(name)(Subcommand)
-
-        plumbum.cli.Application.__init__(self, *args, **kw)
