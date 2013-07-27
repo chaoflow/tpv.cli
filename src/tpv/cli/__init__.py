@@ -21,9 +21,7 @@ plumbum.cli.Application.version._switch_info.names = ['version']
 
 
 class setitem_registers_subcommand(aspect.Aspect):
-    """Register a child as subcommand
-
-    """
+    """Register child as subcommand"""
     @aspect.plumb
     def __setitem__(_next, cls, name, subcommand):
         _next(name, subcommand)
@@ -32,7 +30,7 @@ class setitem_registers_subcommand(aspect.Aspect):
 
 @setitem_registers_subcommand
 class command(classtree.node):
-    pass
+    """Metaclass to produce cli apps via nested command classes"""
 
 
 class Command(plumbum.cli.Application):
