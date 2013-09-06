@@ -13,6 +13,32 @@ SwitchAttr = plumbum.cli.SwitchAttr
 autoswitch = plumbum.cli.autoswitch
 switch = plumbum.cli.switch
 
+completion = plumbum.cli.completion
+
+Completion = plumbum.cli.Completion
+FileCompletion = plumbum.cli.FileCompletion
+DirectoryCompletion = plumbum.cli.DirectoryCompletion
+ListCompletion = plumbum.cli.ListCompletion
+DynamicCompletion = plumbum.cli.DynamicCompletion
+CallbackDynamicCompletion = plumbum.cli.CallbackDynamicCompletion
+
+class DictDynamicCompletion(DynamicCompletion):
+    def __init__(self, dicttree):
+        self.dicttree = dicttree
+
+    def complete(self, command, prefix):
+        node = self.dicttree
+        components = prefix.split("/")
+        for comp in components[:-1]:
+            node = node[comp]
+
+        return ["/".join(components[:-1] + [k]) \
+                + ("/" if isinstance(v, dict) else "")
+                for k,v in node.iteritems() if k.startswith(components[-1])]
+
+    def zsh_action(self, argname):
+        return " __xin_complete_path_like %s" % argname
+
 
 # ATTENTION: MONKEY-PATCH
 # Meta-switches are active for all subcommands. We don't want -v for
