@@ -8,7 +8,6 @@ shortdesc = 'Access the vortex via command line interface'
 
 install_requires = [
     'setuptools',
-    'genzshcomp',
     'metachao',
     'tpv',
 ]
