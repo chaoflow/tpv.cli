@@ -59,7 +59,8 @@ class command(classtree.node):
     """Metaclass to produce cli apps via nested command classes"""
 
 
-class Command(plumbum.cli.Application):
+# always use CompletionMixin
+class Command(plumbum.cli.Application, plumbum.cli.CompletionMixin):
     __metaclass__ = command
 
     CALL_MAIN_IF_NESTED_COMMAND = False
