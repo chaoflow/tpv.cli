@@ -12,6 +12,7 @@ Flag = plumbum.cli.Flag
 SwitchAttr = plumbum.cli.SwitchAttr
 autoswitch = plumbum.cli.autoswitch
 switch = plumbum.cli.switch
+Predicate = plumbum.cli.Predicate
 
 # decorator to mark arguments supporting Completions
 completion = plumbum.cli.completion
@@ -64,6 +65,20 @@ should give foo1 and foo2 as completions.
         # use a path like completion, then zsh completes
         # /foo/foTAB to /foo/foo and displays foo1 foo2
         return " __xin_complete_path_like %s" % argname
+
+
+class DocPredicate(object):
+    """A wrapper for a single-argument function with pretty printing"""
+    def __init__(self, func):
+        self.func = func
+
+    def __str__(self):
+        return self.func.__doc__ \
+            if self.func.__doc__ is not None \
+            else self.func.__name__
+
+    def __call__(self, val):
+        return self.func(val)
 
 
 # ATTENTION: MONKEY-PATCH
