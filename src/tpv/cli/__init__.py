@@ -26,6 +26,7 @@ ListCompletion = plumbum.cli.ListCompletion
 DynamicCompletion = plumbum.cli.DynamicCompletion
 CallbackDynamicCompletion = plumbum.cli.CallbackDynamicCompletion
 
+
 class DictDynamicCompletion(DynamicCompletion):
     '''Completion class to dynamically complete paths in a dicttree
 
@@ -77,8 +78,8 @@ class DocPredicate(object):
             if self.func.__doc__ is not None \
             else self.func.__name__
 
-    def __call__(self, val):
-        return self.func(val)
+    def __call__(self, *args, **kwargs):
+        return self.func(*args, **kwargs)
 
 
 # ATTENTION: MONKEY-PATCH
