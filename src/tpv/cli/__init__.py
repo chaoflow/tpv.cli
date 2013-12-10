@@ -49,7 +49,7 @@ should give foo1 and foo2 as completions.
     def __init__(self, dicttree):
         self.dicttree = dicttree
 
-    def complete(self, command, prefix):
+    def complete(self, command, prefix, posargs):
         # traverse node into dicttree
         node = self.dicttree
         components = prefix.split("/")
