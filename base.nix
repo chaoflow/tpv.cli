@@ -14,7 +14,7 @@ let
       python26Packages.ipython
       python26Packages.nose
       python26Packages.ordereddict
-      # python26Packages.pylint
+      pylint
       python26Packages.recursivePthLoader
       python26Packages.sqlite3
       python26Packages.unittest2
@@ -29,7 +29,7 @@ let
       python27Packages.ipdbplugin
       python27Packages.ipython
       python27Packages.nose
-      # python27Packages.pylint
+      pylint
       python27Packages.recursivePthLoader
       python27Packages.sqlite3
       python27Packages.virtualenv
